@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.LinkedHashMap;
 
@@ -5,54 +8,43 @@ public class Cache {
 
     static void printJson(Map<String, Object> ob) {
         for (Map.Entry i : ob.entrySet())
-            if (i.getValue() != null)
-                System.out.println(i.toString());
-            else
-                System.out.println(i.getKey() + " = " + "{ }");
+            System.out.println("\"" + i.getKey() + "\" : \n" + i.getValue());
+        System.out.println("}");
     }
 
     public static void main(String[] args) {
         var map = new LinkedHashMap<String, Object>();
 
-        // creating and fixing objects
-        ObjectTemplate a = new ObjectTemplate();
-        a.put("New", "Map");
-//        a.fields.put("Array", new int[]{1, 2 ,4 , 5});
-        a.put("Boolean", true);
-        a.put("Bool", false);
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))){
+            while ( true ){
+                String input = br.readLine();
 
-        ObjectTemplate b = new ObjectTemplate();
-        b.put("Integer", 123);
-        b.put("Double", 123.34);
+                if (input.equals("q") || input.equals("quit")
+                        || input.equals("exit")) break;
 
-        a.put("Numbers", b);
+                if (input.length() == 0)
+                    System.out.println("Command can't be empty! Try: cache create object \"planet.name\"");
 
-        a.put("NotNumber", null);
+                String[] commands= input.split("\\s");
 
-        ObjectTemplate as = new ObjectTemplate();
-        ObjectTemplate car = new ObjectTemplate();
-
-        car.put("Engine", "inline");
-        car.put("Doors", 2);
-        car.put("Wheels", 4);
-        car.put("Color", "Red");
-
-        as.put("Car parts", car);
-
-
-        a.put("Car", as);
-
-        map.put("Planets", a);
+                if (commands[0].equals("cache"))
+                    for (int i = 1; i < commands.length; i++)
+                        System.out.println(commands[i]);
+                else
+                    System.out.println("Did you mean cache. Try: cache read");
+            }
+        }catch (IOException ex){
+            System.out.println(ex);
+            ex.printStackTrace();
+        }
 
         // to do
-        for (Map.Entry<String, Object> i : map.entrySet())
-            System.out.println("\"" + i.getKey() + "\" : \n" + i.getValue());
-        System.out.println("}");
+//        printJson(map);
+//        ObjectTemplate ob = (ObjectTemplate) map.get("Planets");
 
-        ObjectTemplate ob = (ObjectTemplate) map.get("Planets");
-
-        System.out.println( "Numbers : {\n" +
-        ob.get("Numbers") + "}");
+//        System.out.println( "Numbers : {\n" +
+//        ob.get("Numbers") + "}");
     }
 }
+
 

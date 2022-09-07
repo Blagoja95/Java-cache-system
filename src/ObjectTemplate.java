@@ -3,11 +3,9 @@ import java.util.Map;
 
 class ObjectTemplate {
     static int objectHierarchy = 1;
-    private LinkedHashMap<String, Object> fields = new LinkedHashMap<>();
+    public LinkedHashMap<String, Object> fields = new LinkedHashMap<>();
 
-    public void put(String key, Object ob) {
-        fields.put(key, ob);
-    }
+    public void put(String key, Object ob) { fields.put(key, ob); }
     public Object get(String key) {
         return fields.get(key);
     }
