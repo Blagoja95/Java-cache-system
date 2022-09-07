@@ -4,12 +4,20 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class Cache {
-    static LinkedHashMap floorMap = new LinkedHashMap<String, Object>();
-    static LinkedHashMap objectDataPointer;
+    static LinkedHashMap<String, Object> floorMap = new LinkedHashMap<>();
+    static LinkedHashMap objectDataPointer = floorMap;
+
+    static final String HELP_MSG = """
+            Available commands:
+                
+            cache create object/field "object1.object2.filed1"
+            cache read ?
+            cache delete ?
+            cache update ?""";
 
     static void read(Map<String, Object> ob) {
         for (Map.Entry i : ob.entrySet())
-            System.out.println("\"" + i.getKey() + "\" : {\n" + i.getValue());
+            System.out.print("\"" + i.getKey() + "\" : {\n" + i.getValue());
         System.out.println("}");
     }
 
@@ -18,15 +26,6 @@ public class Cache {
             case "object":
                 var createPath = new LinkedList<>
                         (List.of(commands[3].replace("\"", "").split("\\W")));
-
-                // create first
-                String tempPath = createPath.getFirst();
-                if (!floorMap.containsKey(tempPath)){
-                    ObjectTemplate tempObject = new ObjectTemplate();
-                    floorMap.put(tempPath, tempObject);
-                    createPath.removeFirst();
-                    objectDataPointer = tempObject.fields;
-                }q
 
                 if (createPath.size() == 0) return;
                 createObject(createPath);
@@ -42,32 +41,39 @@ public class Cache {
         }
     }
 
-    static void createObject(LinkedList list) {
+    static void createObject(LinkedList<String> list) {
+        ObjectTemplate tempOb;
+        String path = list.getFirst();
 
-//        if (objectDataPointer.containsKey(list.getFirst()))
+        if (objectDataPointer.containsKey(path))
+            tempOb = (ObjectTemplate) objectDataPointer.get(path);
+        else {
+            tempOb = new ObjectTemplate();
+            objectDataPointer.put(list.getFirst(), tempOb);
+        }
 
-        ObjectTemplate tempOb = new ObjectTemplate();
-        objectDataPointer.put(list.getFirst(), tempOb);
         objectDataPointer = tempOb.fields;
         list.removeFirst();
 
         if (list.size() != 0) createObject(list);
-
         objectDataPointer = floorMap; // reset pointer;
     }
-
 
     public static void main(String[] args) {
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
             while (true) {
                 String input = br.readLine();
+                if (input.length() == 0)
+                    System.out.println("Command can't be empty! Try: cache create object \"planet.name\"");
 
                 if (input.equals("q") || input.equals("quit")
                         || input.equals("exit")) break;
 
-                if (input.length() == 0)
-                    System.out.println("Command can't be empty! Try: cache create object \"planet.name\"");
+                if (input.equals("help")) {
+                    System.out.println(HELP_MSG);
+                    continue;
+                }
 
                 String[] commands = input.split("\\s+");
 
@@ -91,22 +97,16 @@ public class Cache {
                             break;
 
                         default:
-                            System.out.println("Wrong command. Try: cache create \"object1\"");
+                            System.out.println("Wrong command. Try: cache create object \"object1\"");
                             break;
                     }
                 else
-                    System.out.println("Wrong command! Try: cache create \"objectName\"");
+                    System.out.println("Wrong command. Try command help");
             }
         } catch (IOException ex) {
             System.out.println(ex);
             ex.printStackTrace();
         }
-//         to do
-//        printJson(map);
-//        ObjectTemplate ob = (ObjectTemplate) map.get("Planets");
-//
-//        System.out.println( "Numbers : {\n" +
-//        ob.get("Numbers") + "}");
     }
 }
 
