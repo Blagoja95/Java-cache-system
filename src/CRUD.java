@@ -7,7 +7,9 @@ public class CRUD {
     static LinkedHashMap<String, Object> floorMap = new LinkedHashMap<>();
     static LinkedHashMap objectDataPointer = floorMap;
 
-    private static void recursiveNavigation(LinkedList<String> list) {
+    private static void recursiveNavigation(LinkedList<String> list, int untilIndex) {
+        if (list.size() == untilIndex) return;
+
         String path = list.getFirst();
         ObjectTemplate tempOb;
         if (objectDataPointer.containsKey(path))
@@ -16,7 +18,10 @@ public class CRUD {
             tempOb = new ObjectTemplate();
             objectDataPointer.put(path, tempOb);
         }
+
         objectDataPointer = tempOb.fields;
+        list.removeFirst();
+        recursiveNavigation(list, untilIndex);
     }
 
     static void create(String[] commands) {
@@ -52,20 +57,12 @@ public class CRUD {
     }
 
     private static void createObject(LinkedList<String> list) {
-        do {
-            recursiveNavigation(list);
-            list.removeFirst();
-        }
-        while (list.size() != 0);
+            recursiveNavigation(list, 0);
         objectDataPointer = floorMap; // reset pointer;
     }
 
     private static void createField(LinkedList<String> listOfPaths, String value) {
-        do {
-            recursiveNavigation(listOfPaths);
-            listOfPaths.removeFirst();
-        }
-        while (listOfPaths.size() != 1);
+        recursiveNavigation(listOfPaths, 1);
 
         String path = listOfPaths.getFirst();
         if (objectDataPointer.containsKey(path)) {
@@ -116,5 +113,4 @@ public class CRUD {
         }
         // todo
     }
-
 }
