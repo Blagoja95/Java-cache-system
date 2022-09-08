@@ -110,11 +110,18 @@ public class CRUD {
     }
 
     private static void updateKey(LinkedList<String> listOfPaths, String valueToUpdate) {
-        String currentPath = listOfPaths.getFirst();
-        if (listOfPaths.size() == 1) {
+        do {
+            recursiveNavigation(listOfPaths);
+            listOfPaths.removeFirst();
+        } while (listOfPaths.size() != 1);
+
+        String path = listOfPaths.getFirst();
+        if (objectDataPointer.containsKey(path)) {
             System.out.println("TODO");
         }
-        // todo
     }
 
+    private static void updateValue(LinkedList<String> listOfPah, String valueToUpdate){
+
+    }
 }
