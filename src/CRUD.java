@@ -57,21 +57,21 @@ public class CRUD {
     }
 
     private static void createObject(LinkedList<String> list) {
-            recursiveNavigation(list, 0);
+        recursiveNavigation(list, 0);
         objectDataPointer = floorMap; // reset pointer;
     }
 
     private static void createField(LinkedList<String> listOfPaths, String value) {
         recursiveNavigation(listOfPaths, 1);
 
-        String path = listOfPaths.getFirst();
-        if (objectDataPointer.containsKey(path)) {
+        String key = listOfPaths.getFirst();
+        if (objectDataPointer.containsKey(key)) {
             System.out.println("An object or a filed with the same name already exist!");
             objectDataPointer = floorMap;
             return;
         }
 
-        objectDataPointer.put(path, value);
+        objectDataPointer.put(key, value);
         objectDataPointer = floorMap; // reset pointer
     }
 
@@ -98,18 +98,33 @@ public class CRUD {
 
         switch (target) {
             case "key" -> updateKey(listOfPaths, value);
-//            case "value" -> updateValue(listOfPaths, value);
-            default -> {
-                System.out.println("Wrong target");
-                return;
+            case "value" -> {
+                if (value.equals("OBJECT"))
+                    updateValue(listOfPaths, new ObjectTemplate());
+                else
+                    updateValue(listOfPaths, value);
             }
+            default -> System.out.println("Wrong target");
+
         }
     }
 
-    private static void updateKey(LinkedList<String> listOfPaths, String valueToUpdate) {
-        String path = listOfPaths.getFirst();
-        if (objectDataPointer.containsKey(path)) {
+    private static void updateKey(LinkedList<String> listOfPaths, String keyToUpdate) {
+        String key = listOfPaths.getFirst();
+        if (objectDataPointer.containsKey(key)) {
             System.out.println("TODO");
         }
     }
+
+    private static void updateValue(LinkedList<String> listOfPaths, Object valueToUpdate) {
+        recursiveNavigation(listOfPaths, 1);
+
+        String key = listOfPaths.getFirst();
+        if (objectDataPointer.containsKey(key))
+            objectDataPointer.replace(key, valueToUpdate);
+        else
+            System.out.println("Target doesn't exit");
+        objectDataPointer = floorMap;
+    }
 }
+
