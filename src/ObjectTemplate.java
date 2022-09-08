@@ -12,7 +12,7 @@ class ObjectTemplate {
 
     @Override
     public String toString() {
-        if (fields.size() == 0) return "{}";
+        if (fields.size() == 0) return "";
 
         StringBuilder string = new StringBuilder("");
         int tabsCount = objectHierarchy++;
@@ -38,12 +38,12 @@ class ObjectTemplate {
         return string.toString();
     }
 
-    private String appendTabs(int tabsCount) {
+    private StringBuilder appendTabs(int tabsCount) {
         StringBuilder string = new StringBuilder();
 
         for (int i = tabsCount; i > 0; i--)
             string.append("\t");
 
-        return string.toString();
+        return string;
     }
 }
