@@ -1,7 +1,4 @@
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class CRUD {
     static LinkedHashMap<String, Object> floorMap = new LinkedHashMap<>();
@@ -110,6 +107,8 @@ public class CRUD {
     }
 
     private static void updateKey(LinkedList<String> listOfPaths, String keyToUpdate) {
+        recursiveNavigation(listOfPaths, 1);
+
         String key = listOfPaths.getFirst();
         if (objectDataPointer.containsKey(key)) {
             System.out.println("TODO");
