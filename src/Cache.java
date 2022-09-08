@@ -15,7 +15,6 @@ public class Cache {
             cache delete ?
             cache update ?""";
 
-
     public static void main(String[] args) {
         System.out.println("Welcome to the java cache system");
         System.out.println(HELP_MSG);
@@ -38,27 +37,17 @@ public class Cache {
 
                 if (commands.length > MIN_ARGUMENTS && commands.length <= MAX_ARGUMENTS && commands[0].equals("cache"))
                     switch (commands[1]) {
-                        case "create":
-                            CRUD.create(commands);
-                            break;
-
-                        case "read":
+                        case "create" -> CRUD.create(commands);
+                        case "read" -> {
                             System.out.println("read todo");
-                            break;
-
-                        case "delete":
-                            System.out.println("delete todo");
-                            break;
-
-                        case "update":
-                            System.out.println("update todo");
-                            break;
-
-                        default:
-                            System.out.println("Wrong command. Try: cache create object \"object1\"");
-                            break;
+                        }
+                        case "delete" -> System.out.println("delete todo");
+                        case "update" -> CRUD.update(commands);
+                        default -> System.out.println("Wrong command. Try: cache create object \"object1\"");
                     }
                 else System.out.println("Wrong command. Try command help");
+                // to do dev: remove later
+                CRUD.display(CRUD.floorMap);
             }
         } catch (IOException ex) {
             System.out.println(ex);
