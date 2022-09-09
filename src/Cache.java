@@ -22,8 +22,10 @@ public class Cache {
             while (true) {
                 String input = br.readLine();
 
-                if (input.length() == 0)
+                if (input.length() == 0){
                     System.out.println("Command can't be empty! Try: cache create object \"planet.name\"");
+                    continue;
+                }
 
                 if (input.equals("q") || input.equals("quit") || input.equals("exit")) break;
 

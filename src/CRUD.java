@@ -5,7 +5,7 @@ public class CRUD {
     static LinkedHashMap objectDataPointer = floorMap;
     private static final int TARGET = 2, PATH = 3, VALUE = 4; // indexes
 
-    private static void recursiveNavigation(LinkedList<String> list, int untilIndex) {
+    private static void recursiveCreation(LinkedList<String> list, int untilIndex) {
         if (list.size() == untilIndex) return;
 
         String path = list.getFirst();
@@ -19,7 +19,25 @@ public class CRUD {
 
         objectDataPointer = tempOb.fields;
         list.removeFirst();
-        recursiveNavigation(list, untilIndex);
+        recursiveCreation(list, untilIndex);
+    }
+
+    private static void recursiveNavigation (LinkedList<String> list){
+        if (list.size() == 1) return;
+
+        ObjectTemplate tempOb;
+        String path = list.getFirst();
+        if (objectDataPointer.containsKey(path))
+            tempOb = (ObjectTemplate) objectDataPointer.get(path);
+        else {
+            System.out.println("Target doesn't exist!");
+            return;
+        }
+
+        objectDataPointer = tempOb.fields;
+        list.removeFirst();
+        recursiveNavigation(list);
+
     }
 
     private static LinkedList<String> createListOfPath(String path) {
@@ -61,12 +79,12 @@ public class CRUD {
     }
 
     private static void createObject(LinkedList<String> list) {
-        recursiveNavigation(list, 0);
+        recursiveCreation(list, 0);
         objectDataPointer = floorMap; // reset pointer;
     }
 
     private static void createField(LinkedList<String> listOfPaths, String value) {
-        recursiveNavigation(listOfPaths, 1);
+        recursiveCreation(listOfPaths, 1);
 
         String key = listOfPaths.getFirst();
         if (objectDataPointer.containsKey(key)) {
@@ -87,6 +105,8 @@ public class CRUD {
     }
 
     static void update(String[] commands) {
+        if (commands.length != 5) return;
+
         if (commands[TARGET].length() == 0) return;
         String target = commands[TARGET];
 
@@ -111,7 +131,7 @@ public class CRUD {
     }
 
     private static void updateKey(LinkedList<String> listOfPaths, String keyToUpdate) {
-        recursiveNavigation(listOfPaths, 1);
+        recursiveNavigation(listOfPaths);
 
         String key = listOfPaths.getFirst();
         if (objectDataPointer.containsKey(key)) {
@@ -120,7 +140,7 @@ public class CRUD {
     }
 
     private static void updateValue(LinkedList<String> listOfPaths, Object valueToUpdate) {
-        recursiveNavigation(listOfPaths, 1);
+        recursiveNavigation(listOfPaths);
 
         String key = listOfPaths.getFirst();
         if (objectDataPointer.containsKey(key))
@@ -134,7 +154,7 @@ public class CRUD {
         if (path.length() == 0) return;
         var listOfPaths = createListOfPath(path);
 
-        recursiveNavigation(listOfPaths, 1);
+        recursiveNavigation(listOfPaths);
         if (objectDataPointer.remove(listOfPaths.getFirst()) == null)
             System.out.println("Target not found!");
 
