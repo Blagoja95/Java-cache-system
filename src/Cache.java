@@ -8,14 +8,16 @@ public class Cache {
     static final String HELP_MSG = """
             Available commands:
                 
-            cache create object "object1.object2"
-            cache create field  "object1.field" "value"
-            cache read ?
-            cache delete ?
-            cache update ?""";
+            1. cache create object "object1.object2"
+               cache create field  "object1.field" "value"
+            2. cache read ?
+            3. cache delete "object1.object2.deleteTarget"
+            4. cache update value "object1.updateTarget" "updateWith"
+               cache update value "object1.updateTarget" "OBJECT" // to update it with a new object
+               cache update key ? TODO""";
 
     public static void main(String[] args) {
-        System.out.println("Welcome to the java cache system");
+        System.out.println("Welcome to the java cache system \n");
         System.out.println(HELP_MSG);
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
