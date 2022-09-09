@@ -3,7 +3,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Cache {
-
     static final int MIN_ARGUMENTS = 3;
     static final int MAX_ARGUMENTS = 5;
     static final String HELP_MSG = """
@@ -35,13 +34,13 @@ public class Cache {
 
                 String[] commands = input.split("\\s+");
 
-                if (commands.length > MIN_ARGUMENTS && commands.length <= MAX_ARGUMENTS && commands[0].equals("cache"))
+                if (commands.length >= MIN_ARGUMENTS && commands.length <= MAX_ARGUMENTS && commands[0].equals("cache"))
                     switch (commands[1]) {
                         case "create" -> CRUD.create(commands);
                         case "read" -> {
                             System.out.println("read todo");
                         }
-                        case "delete" -> System.out.println("delete todo");
+                        case "delete" -> CRUD.delete(commands[2]);
                         case "update" -> CRUD.update(commands);
                         default -> System.out.println("Wrong command. Try: cache create object \"object1\"");
                     }

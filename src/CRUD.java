@@ -3,6 +3,7 @@ import java.util.*;
 public class CRUD {
     static LinkedHashMap<String, Object> floorMap = new LinkedHashMap<>();
     static LinkedHashMap objectDataPointer = floorMap;
+    private static final int TARGET = 2, PATH = 3, VALUE = 4; // indexes
 
     private static void recursiveNavigation(LinkedList<String> list, int untilIndex) {
         if (list.size() == untilIndex) return;
@@ -21,30 +22,36 @@ public class CRUD {
         recursiveNavigation(list, untilIndex);
     }
 
+    private static LinkedList<String> createListOfPath(String path) {
+        return new LinkedList<>(List.of(path
+                .replace("\"", "")
+                .split("\\W")));
+    }
+
     static void create(String[] commands) {
-        final int TARGET = 2, PATH = 3, VALUE = 4;
+        if (commands.length < 4) return;
+
         if (commands[PATH].length() == 0) {
             System.out.println("Missing arguments!");
             return;
         }
 
-        var listOfPaths = new LinkedList<>(List.of(commands[PATH]
-                .replace("\"", "")
-                .split("\\W")));
+        var listOfPaths = createListOfPath(commands[PATH]);
 
         switch (commands[TARGET]) {
             case "object" -> createObject(listOfPaths);
             case "field" -> {
                 if (listOfPaths.size() == 1) {
-                    System.out.println("Missing name of the field! Try cache create field \"map.fieldName\" ");
+                    System.out.println("Missing a value or a name of a field! Try cache create field \"map.fieldName\" ");
                     return;
                 }
 
                 // Index 4 out of bounds for length 4 to do
-                if (commands.length != VALUE && commands[VALUE].length() == 0) {
+                if (commands.length != VALUE + 1 && commands[VALUE].length() == 0) {
                     System.out.println("Missing field value!");
                     return;
                 }
+
                 String value = commands[VALUE];
                 createField(listOfPaths, value);
             }
@@ -80,15 +87,12 @@ public class CRUD {
     }
 
     static void update(String[] commands) {
-        final int TARGET = 2, PATH = 3, VALUE = 4;
-
         if (commands[TARGET].length() == 0) return;
         String target = commands[TARGET];
 
         if (commands[PATH].length() == 0) return;
-        var listOfPaths = new LinkedList<String>(List.of(commands[PATH]
-                .replace("\"", "")
-                .split("\\W")));
+        var listOfPaths = createListOfPath(commands[PATH]);
+
 
         if (commands[VALUE].length() == 0) return;
         String value = commands[VALUE].replace("\"", "");
@@ -124,6 +128,17 @@ public class CRUD {
         else
             System.out.println("Target doesn't exit");
         objectDataPointer = floorMap;
+    }
+
+    static void delete(String path) {
+        if (path.length() == 0) return;
+        var listOfPaths = createListOfPath(path);
+
+        recursiveNavigation(listOfPaths, 1);
+        if (objectDataPointer.remove(listOfPaths.getFirst()) == null)
+            System.out.println("Target not found!");
+
+        objectDataPointer = floorMap; // reset pointer;
     }
 }
 
