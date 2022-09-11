@@ -1,12 +1,13 @@
 package cache;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-class ObjectTemplate {
-    private final int TARGET = 2, PATH = 3, VALUE = 4; // indexes
+class ObjectTemplate implements CRUD, Serializable {
+    private final int TARGET = 1, PATH = 2, VALUE = 3; // indexes
     LinkedHashMap<String, ValueStructure> floorMap = new LinkedHashMap<>();
     LinkedHashMap<String, ValueStructure> objectDataPointer = floorMap;
 
@@ -48,9 +49,11 @@ class ObjectTemplate {
         recursiveNavigation(list);
     }
 
-    void create(String[] commands) {
-        if (commands.length < VALUE)
+    public void create(String[] commands) {
+        if (commands.length < VALUE) {
+            System.out.println("Missing arguments");
             return;
+        }
 
         if (commands[PATH].length() == 0) {
             System.out.println("Missing arguments!");
@@ -76,8 +79,8 @@ class ObjectTemplate {
                 String value = commands[VALUE];
                 createField(listOfPaths, value);
             }
-            default ->
-                    System.out.println("Missing commands. Try using object or field after create : cache create field \"object.field\" \"value\"");
+            default -> {
+            }
         }
     }
 
@@ -100,11 +103,83 @@ class ObjectTemplate {
         objectDataPointer = floorMap; // reset pointer
     }
 
+    @Override
+    public void read(String[] commands) {
+
+    }
+
+    // todo: change access to private
     public void display() {
         ValueStructure.resetHierarchyLevel();
         for (Map.Entry i : floorMap.entrySet())
             System.out.print("\"" + i.getKey() + "\" : {\n" + i.getValue());
         System.out.println("}");
+    }
+
+    public void update(String[] commands) {
+        if (commands.length != 4) {
+            System.out.println("Missing arguments!");
+            return;
+        }
+
+        if (commands[TARGET].length() == 0)
+            return;
+
+        String target = commands[TARGET];
+
+        if (commands[PATH].length() == 0)
+            return;
+
+        var listOfPaths = createListOfPath(commands[PATH]);
+
+
+        if (commands[VALUE].length() == 0)
+            return;
+
+        String value = commands[VALUE].replace("\"", "");
+
+        switch (target) {
+            case "key" -> updateKey(listOfPaths, value);
+            case "value" -> {
+                if (value.equals("OBJECT"))
+                    updateValue(listOfPaths, new ValueStructure());
+                else
+                    updateValue(listOfPaths, new ValueStructure(value));
+            }
+            default -> System.out.println("Wrong target");
+
+        }
+    }
+
+    private void updateKey(LinkedList<String> listOfPaths, String keyToUpdate) {
+        recursiveNavigation(listOfPaths);
+
+        String key = listOfPaths.getFirst();
+        if (objectDataPointer.containsKey(key)) {
+            System.out.println("TODO");
+        }
+    }
+
+    private void updateValue(LinkedList<String> listOfPaths, ValueStructure valueToUpdate) {
+        recursiveNavigation(listOfPaths);
+
+        String key = listOfPaths.getFirst();
+        if (objectDataPointer.containsKey(key))
+            objectDataPointer.replace(key, valueToUpdate);
+        else
+            System.out.println("Target doesn't exit");
+        objectDataPointer = floorMap;
+    }
+
+    public void delete(String path) {
+        if (path.length() == 0) return;
+        var listOfPaths = createListOfPath(path);
+
+        recursiveNavigation(listOfPaths);
+        if (objectDataPointer.remove(listOfPaths.getFirst()) == null)
+            System.out.println("Target not found!");
+
+        objectDataPointer = floorMap; // reset pointer;
     }
 
     private LinkedList<String> createListOfPath(String path) {

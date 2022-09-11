@@ -1,9 +1,10 @@
 package cache;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class ValueStructure {
+public class ValueStructure implements Serializable {
     private static int objectHierarchy = 1;
     private String stringValue;
     public LinkedHashMap<String, ValueStructure> valueMap = new LinkedHashMap<>();
@@ -37,13 +38,11 @@ public class ValueStructure {
 
             if (temp == null) {
                 string.append(" {},\n");
-            }
-            else  if (temp.stringValue != null) {
+            } else if (temp.stringValue != null) {
                 string.append(" ")
                         .append(temp.stringValue);
                 string.append(",\n");
-            }
-            else {
+            } else {
                 string.append("{\n")
                         .append(temp);
                 string.append(appendTabs(tabsCount));
