@@ -23,7 +23,10 @@ public class Cache {
 		System.out.println("Welcome to the java cache system \n");
 		System.out.println(HELP_MSG);
 
-		ObjectTemplate cache = new ObjectTemplate();
+		LocalStorage io = new LocalStorage("json.ser");
+
+		ObjectTemplate cache = io.loadData();
+
 
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
 			while (true) {
@@ -64,5 +67,7 @@ public class Cache {
 			System.out.println(ex);
 			ex.printStackTrace();
 		}
+
+		io.storeData(cache);
 	}
 }
