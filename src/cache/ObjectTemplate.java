@@ -127,8 +127,7 @@ class ObjectTemplate implements CRUD, Serializable {
 			display(createListOfPath(commands[1]));
 	}
 
-	// todo: change access to private
-	public void display() {
+	private void display() {
 
 		if (floorMap.size() == 0) {
 			System.out.println("No data! Try create object objectName.");
@@ -142,7 +141,7 @@ class ObjectTemplate implements CRUD, Serializable {
 		System.out.println("}");
 	}
 
-	public void display(LinkedList<String> path) {
+	private void display(LinkedList<String> path) {
 		ValueStructure.resetHierarchyLevel();
 
 		recursiveNavigation(path);
@@ -197,8 +196,12 @@ class ObjectTemplate implements CRUD, Serializable {
 		String key = listOfPaths.getFirst();
 
 		if (objectDataPointer.containsKey(key)) {
-			System.out.println("TODO");
-		}
+			objectDataPointer.put(keyToUpdate, objectDataPointer.get(key));
+			objectDataPointer.remove(key);
+		} else
+			System.out.println("Key not found!");
+
+		objectDataPointer = floorMap;
 	}
 
 	private void updateValue(LinkedList<String> listOfPaths, ValueStructure valueToUpdate) {
@@ -234,3 +237,4 @@ class ObjectTemplate implements CRUD, Serializable {
 				.split("\\W")));
 	}
 }
+// TODO: read: display and format specific branch
