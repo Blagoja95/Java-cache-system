@@ -12,6 +12,7 @@ public class LocalStorage {
     }
 
     public void setStorageLocation(String storageLocation) {
+
         if (storageLocation.length() == 0) {
             System.err.println("Path name can't be empty!");
             return;
@@ -37,10 +38,8 @@ public class LocalStorage {
             return (ObjectTemplate) inObjectFile.readObject();
 
         } catch (ClassNotFoundException | IOException ex) {
-            System.err.println(ex);
+            return new ObjectTemplate();
         }
-
-        return new ObjectTemplate();
     }
 
     private void checkFile(String path) {
