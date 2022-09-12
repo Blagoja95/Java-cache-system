@@ -7,184 +7,230 @@ import java.util.List;
 import java.util.Map;
 
 class ObjectTemplate implements CRUD, Serializable {
-    private final int TARGET = 1, PATH = 2, VALUE = 3; // indexes
-    LinkedHashMap<String, ValueStructure> floorMap = new LinkedHashMap<>();
-    LinkedHashMap<String, ValueStructure> objectDataPointer = floorMap;
+	private final int TARGET = 1, PATH = 2, VALUE = 3; // indexes
+	LinkedHashMap<String, ValueStructure> floorMap = new LinkedHashMap<>();
+	LinkedHashMap<String, ValueStructure> objectDataPointer = floorMap;
 
-    private void recursiveCreation(LinkedList<String> list, int untilIndex) {
-        if (list.size() == untilIndex)
-            return;
+	private void recursiveCreation(LinkedList<String> list, int untilIndex) {
 
-        String path = list.getFirst();
-        ValueStructure tempOb;
+		if (list.size() == untilIndex)
+			return;
 
-        if (objectDataPointer.containsKey(path))
-            tempOb = objectDataPointer.get(path);
-        else {
-            tempOb = new ValueStructure();
-            objectDataPointer.put(path, tempOb);
-        }
+		String path = list.getFirst();
+		ValueStructure tempOb;
 
-        objectDataPointer = tempOb.valueMap;
-        list.removeFirst();
-        recursiveCreation(list, untilIndex);
-    }
+		if (objectDataPointer.containsKey(path))
+			tempOb = objectDataPointer.get(path);
+		else {
+			tempOb = new ValueStructure();
+			objectDataPointer.put(path, tempOb);
+		}
 
-    private void recursiveNavigation(LinkedList<String> list) {
-        if (list.size() == 1)
-            return;
+		objectDataPointer = tempOb.valueMap;
+		list.removeFirst();
+		recursiveCreation(list, untilIndex);
+	}
 
-        ValueStructure tempOb;
-        String path = list.getFirst();
+	private void recursiveNavigation(LinkedList<String> list) {
 
-        if (objectDataPointer.containsKey(path))
-            tempOb = objectDataPointer.get(path);
-        else {
-            System.out.println("Target doesn't exist!");
-            return;
-        }
+		if (list.size() == 1)
+			return;
 
-        objectDataPointer = tempOb.valueMap;
-        list.removeFirst();
-        recursiveNavigation(list);
-    }
+		ValueStructure tempOb;
+		String path = list.getFirst();
 
-    public void create(String[] commands) {
-        if (commands.length < VALUE) {
-            System.out.println("Missing arguments");
-            return;
-        }
+		if (objectDataPointer.containsKey(path))
+			tempOb = objectDataPointer.get(path);
+		else {
+			objectDataPointer = floorMap;
+			System.out.println("Target doesn't exist!");
+			return;
+		}
 
-        if (commands[PATH].length() == 0) {
-            System.out.println("Missing arguments!");
-            return;
-        }
+		objectDataPointer = tempOb.valueMap;
+		list.removeFirst();
+		recursiveNavigation(list);
+	}
 
-        var listOfPaths = createListOfPath(commands[PATH]);
+	public void create(String[] commands) {
 
-        switch (commands[TARGET]) {
-            case "object" -> createObject(listOfPaths);
-            case "field" -> {
-                if (listOfPaths.size() == 1) {
-                    System.out.println("Missing a value or a name of a field! Try cache create field \"map.fieldName\" ");
-                    return;
-                }
+		if (commands.length < VALUE) {
+			System.out.println("Missing arguments");
+			return;
+		}
 
-                // Index 4 out of bounds for length 4 to do
-                if (commands.length != VALUE + 1 && commands[VALUE].length() == 0) {
-                    System.out.println("Missing field value!");
-                    return;
-                }
+		if (commands[PATH].length() == 0) {
+			System.out.println("Missing arguments!");
+			return;
+		}
 
-                String value = commands[VALUE];
-                createField(listOfPaths, value);
-            }
-            default -> {
-            }
-        }
-    }
+		var listOfPaths = createListOfPath(commands[PATH]);
 
-    private void createObject(LinkedList<String> list) {
-        recursiveCreation(list, 0);
-        objectDataPointer = floorMap; // reset pointer;
-    }
+		switch (commands[TARGET]) {
+			case "object" -> createObject(listOfPaths);
+			case "field" -> {
 
-    private void createField(LinkedList<String> listOfPaths, String value) {
-        recursiveCreation(listOfPaths, 1);
-        String key = listOfPaths.getFirst();
+				if (listOfPaths.size() == 1) {
+					System.out.println("Missing a value or a name of a field! Try cache create field \"map.fieldName\" ");
+					return;
+				}
 
-        if (objectDataPointer.containsKey(key)) {
-            System.out.println("An object or a filed with the same name already exist!");
-            objectDataPointer = floorMap;
-            return;
-        }
+				// Index 4 out of bounds for length 4 to do
+				if (commands.length != VALUE + 1 && commands[VALUE].length() == 0) {
+					System.out.println("Missing field value!");
+					return;
+				}
 
-        objectDataPointer.put(key, new ValueStructure(value));
-        objectDataPointer = floorMap; // reset pointer
-    }
+				String value = commands[VALUE];
+				createField(listOfPaths, value);
+			}
+			default -> {
+			}
+		}
+	}
 
-    @Override
-    public void read(String[] commands) {
+	private void createObject(LinkedList<String> list) {
+		recursiveCreation(list, 0);
+		objectDataPointer = floorMap; // reset pointer;
+	}
 
-    }
+	private void createField(LinkedList<String> listOfPaths, String value) {
+		recursiveCreation(listOfPaths, 1);
+		String key = listOfPaths.getFirst();
 
-    // todo: change access to private
-    public void display() {
-        ValueStructure.resetHierarchyLevel();
-        for (Map.Entry i : floorMap.entrySet())
-            System.out.print("\"" + i.getKey() + "\" : {\n" + i.getValue());
-        System.out.println("}");
-    }
+		if (objectDataPointer.containsKey(key)) {
+			System.out.println("An object or a filed with the same name already exist!");
+			objectDataPointer = floorMap;
+			return;
+		}
 
-    public void update(String[] commands) {
-        if (commands.length != 4) {
-            System.out.println("Missing arguments!");
-            return;
-        }
+		objectDataPointer.put(key, new ValueStructure(value));
+		objectDataPointer = floorMap; // reset pointer
+	}
 
-        if (commands[TARGET].length() == 0)
-            return;
+	@Override
+	public void read(String[] commands) {
 
-        String target = commands[TARGET];
+		if (commands.length > 3) {
+			System.out.println("Too many arguments");
+			return;
+		}
 
-        if (commands[PATH].length() == 0)
-            return;
+		if (commands[1].length() == 0) {
+			System.out.println("Path name can't be empty!. Try read all");
+			return;
+		}
 
-        var listOfPaths = createListOfPath(commands[PATH]);
+		if (commands[1].equals("all"))
+			display();
+		else
+			display(createListOfPath(commands[1]));
+	}
+
+	// todo: change access to private
+	public void display() {
+
+		if (floorMap.size() == 0) {
+			System.out.println("No data! Try create object objectName.");
+			return;
+		}
+
+		ValueStructure.resetHierarchyLevel();
+
+		for (Map.Entry i : floorMap.entrySet())
+			System.out.print("\"" + i.getKey() + "\" : {\n" + i.getValue());
+		System.out.println("}");
+	}
+
+	public void display(LinkedList<String> path) {
+		ValueStructure.resetHierarchyLevel();
+
+		recursiveNavigation(path);
+
+		for (Map.Entry i : objectDataPointer.entrySet())
+			System.out.print("\"" + i.getKey() + "\" : {\n" + i.getValue());
+		System.out.println("}");
+
+		objectDataPointer = floorMap;
+	}
+
+	public void update(String[] commands) {
+
+		if (commands.length != 4) {
+			System.out.println("Missing arguments!");
+			return;
+		}
+
+		if (commands[TARGET].length() == 0)
+			return;
+
+		String target = commands[TARGET];
+
+		if (commands[PATH].length() == 0)
+			return;
+
+		var listOfPaths = createListOfPath(commands[PATH]);
 
 
-        if (commands[VALUE].length() == 0)
-            return;
+		if (commands[VALUE].length() == 0)
+			return;
 
-        String value = commands[VALUE].replace("\"", "");
+		String value = commands[VALUE].replace("\"", "");
 
-        switch (target) {
-            case "key" -> updateKey(listOfPaths, value);
-            case "value" -> {
-                if (value.equals("OBJECT"))
-                    updateValue(listOfPaths, new ValueStructure());
-                else
-                    updateValue(listOfPaths, new ValueStructure(value));
-            }
-            default -> System.out.println("Wrong target");
+		switch (target) {
+			case "key" -> updateKey(listOfPaths, value);
+			case "value" -> {
 
-        }
-    }
+				if (value.equals("OBJECT"))
+					updateValue(listOfPaths, new ValueStructure());
+				else
+					updateValue(listOfPaths, new ValueStructure(value));
+			}
+			default -> System.out.println("Wrong target");
 
-    private void updateKey(LinkedList<String> listOfPaths, String keyToUpdate) {
-        recursiveNavigation(listOfPaths);
+		}
+	}
 
-        String key = listOfPaths.getFirst();
-        if (objectDataPointer.containsKey(key)) {
-            System.out.println("TODO");
-        }
-    }
+	private void updateKey(LinkedList<String> listOfPaths, String keyToUpdate) {
+		recursiveNavigation(listOfPaths);
 
-    private void updateValue(LinkedList<String> listOfPaths, ValueStructure valueToUpdate) {
-        recursiveNavigation(listOfPaths);
+		String key = listOfPaths.getFirst();
 
-        String key = listOfPaths.getFirst();
-        if (objectDataPointer.containsKey(key))
-            objectDataPointer.replace(key, valueToUpdate);
-        else
-            System.out.println("Target doesn't exit");
-        objectDataPointer = floorMap;
-    }
+		if (objectDataPointer.containsKey(key)) {
+			System.out.println("TODO");
+		}
+	}
 
-    public void delete(String path) {
-        if (path.length() == 0) return;
-        var listOfPaths = createListOfPath(path);
+	private void updateValue(LinkedList<String> listOfPaths, ValueStructure valueToUpdate) {
+		recursiveNavigation(listOfPaths);
 
-        recursiveNavigation(listOfPaths);
-        if (objectDataPointer.remove(listOfPaths.getFirst()) == null)
-            System.out.println("Target not found!");
+		String key = listOfPaths.getFirst();
 
-        objectDataPointer = floorMap; // reset pointer;
-    }
+		if (objectDataPointer.containsKey(key))
+			objectDataPointer.replace(key, valueToUpdate);
+		else
+			System.out.println("Target doesn't exit");
+		objectDataPointer = floorMap;
+	}
 
-    private LinkedList<String> createListOfPath(String path) {
-        return new LinkedList<>(List.of(path
-                .replace("\"", "")
-                .split("\\W")));
-    }
+	public void delete(String path) {
+
+		if (path.length() == 0)
+			return;
+
+		var listOfPaths = createListOfPath(path);
+
+		recursiveNavigation(listOfPaths);
+
+		if (objectDataPointer.remove(listOfPaths.getFirst()) == null)
+			System.out.println("Target not found!");
+
+		objectDataPointer = floorMap; // reset pointer;
+	}
+
+	private LinkedList<String> createListOfPath(String path) {
+		return new LinkedList<>(List.of(path
+				.replace("\"", "")
+				.split("\\W")));
+	}
 }

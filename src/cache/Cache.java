@@ -27,7 +27,6 @@ public class Cache {
 
 		ObjectTemplate cache = io.loadData();
 
-
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
 			while (true) {
 				String input = br.readLine();
@@ -50,24 +49,20 @@ public class Cache {
 				if (commands.length >= MIN_ARGUMENTS && commands.length < MAX_ARGUMENTS)
 					switch (commands[0]) {
 						case "create" -> cache.create(commands);
-						case "read" -> {
-							System.out.println("read todo");
+						case "read" -> cache.read(commands);
+						case "delete" -> cache.delete(commands[1]);
+						case "update" -> cache.update(commands);
+						default -> {
+							System.out.println("Wrong command! Try help");
 						}
-                        case "delete" -> cache.delete(commands[1]);
-                        case "update" -> cache.update(commands);
-						default -> {}
 					}
 				else
-					System.out.printf("\"Wrong command. Try command help\"");
-
-				// to do dev: remove later
-				cache.display();
+					System.out.printf("Wrong command. Try command help");
 			}
 		} catch (IOException ex) {
 			System.out.println(ex);
 			ex.printStackTrace();
 		}
-
 		io.storeData(cache);
 	}
 }
