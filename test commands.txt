@@ -1,0 +1,4 @@
+create field planet.name Earth
+create field planet.continents.name Europe
+create field planet.continents.countries.serbia.name Serbia
+create field planet.continents.countries.serbia.capital Belgrade
