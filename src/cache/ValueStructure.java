@@ -55,10 +55,7 @@ public class ValueStructure implements Serializable {
 
     private StringBuilder appendTabs(int tabsCount) {
         StringBuilder string = new StringBuilder();
-
-        for (int i = tabsCount; i > 0; i--)
-            string.append("\t");
-
+        string.append("\t".repeat(Math.max(0, tabsCount)));
         return string;
     }
 }
