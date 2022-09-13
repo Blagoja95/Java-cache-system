@@ -3,7 +3,6 @@ package cache;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 public class Cache {
 	static final int MIN_ARGUMENTS = 2;
@@ -53,9 +52,7 @@ public class Cache {
 						case "read" -> cache.read(commands);
 						case "delete" -> cache.delete(commands[1]);
 						case "update" -> cache.update(commands);
-						default -> {
-							System.out.println("Wrong command! Try help");
-						}
+						default -> System.out.println("Wrong command! Try help");
 					}
 				else
 					System.out.println("Wrong command. Try command help");

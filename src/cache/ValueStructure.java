@@ -25,7 +25,7 @@ public class ValueStructure implements Serializable {
         if (valueMap.size() == 0)
             return "";
 
-        StringBuilder string = new StringBuilder("");
+        StringBuilder string = new StringBuilder();
         int tabsCount = objectHierarchy++;
 
         for (Map.Entry<String, ValueStructure> entry : valueMap.entrySet()) {

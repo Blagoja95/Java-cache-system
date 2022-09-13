@@ -16,14 +16,14 @@ class ObjectTemplate implements CRUD, Serializable {
 		if (list.size() == untilIndex)
 			return;
 
-		String path = list.getFirst();
+		String next = list.getFirst();
 		ValueStructure tempOb;
 
-		if (objectDataPointer.containsKey(path))
-			tempOb = objectDataPointer.get(path);
+		if (objectDataPointer.containsKey(next))
+			tempOb = objectDataPointer.get(next);
 		else {
 			tempOb = new ValueStructure();
-			objectDataPointer.put(path, tempOb);
+			objectDataPointer.put(next, tempOb);
 		}
 
 		objectDataPointer = tempOb.valueMap;
@@ -33,14 +33,14 @@ class ObjectTemplate implements CRUD, Serializable {
 
 	private void recursiveNavigation(LinkedList<String> list) {
 
-		if (list.size() == 1)
+		if (list.size() < 2)
 			return;
 
 		ValueStructure tempOb;
-		String path = list.getFirst();
+		String next = list.getFirst();
 
-		if (objectDataPointer.containsKey(path))
-			tempOb = objectDataPointer.get(path);
+		if (objectDataPointer.containsKey(next))
+			tempOb = objectDataPointer.get(next);
 		else {
 			objectDataPointer = floorMap;
 			System.out.println("Target doesn't exist!");
@@ -50,6 +50,29 @@ class ObjectTemplate implements CRUD, Serializable {
 		objectDataPointer = tempOb.valueMap;
 		list.removeFirst();
 		recursiveNavigation(list);
+	}
+
+	private void recursiveRead(LinkedList<String> list, String last) {
+
+		if (list.size() == 0){
+			System.out.println("\"" + last + "\" : {");
+			return;
+		}
+
+		ValueStructure tempOb;
+		String next = list.getFirst();
+
+		if (objectDataPointer.containsKey(next))
+			tempOb = objectDataPointer.get(next);
+		else {
+			objectDataPointer = floorMap;
+			System.out.println("Target doesn't exist!");
+			return;
+		}
+
+		objectDataPointer = tempOb.valueMap;
+		list.removeFirst();
+		recursiveRead(list, next);
 	}
 
 	public void create(String[] commands) {
@@ -76,7 +99,7 @@ class ObjectTemplate implements CRUD, Serializable {
 				}
 
 				// Index 4 out of bounds for length 4 to do
-				if (commands.length != VALUE + 1 && commands[VALUE].length() == 0) {
+				if (commands.length != VALUE + 1 || commands[VALUE].length() == 0) {
 					System.out.println("Missing field value!");
 					return;
 				}
@@ -136,7 +159,7 @@ class ObjectTemplate implements CRUD, Serializable {
 
 		ValueStructure.resetHierarchyLevel();
 
-		for (Map.Entry i : floorMap.entrySet())
+		for (Map.Entry<String, ValueStructure> i : floorMap.entrySet())
 			System.out.print("\"" + i.getKey() + "\" : {\n" + i.getValue());
 		System.out.println("}");
 	}
@@ -144,9 +167,9 @@ class ObjectTemplate implements CRUD, Serializable {
 	private void display(LinkedList<String> path) {
 		ValueStructure.resetHierarchyLevel();
 
-		recursiveNavigation(path);
+		recursiveRead(path, "");
 
-		for (Map.Entry i : objectDataPointer.entrySet())
+		for (Map.Entry<String, ValueStructure> i : objectDataPointer.entrySet())
 			System.out.print("\"" + i.getKey() + "\" : {\n" + i.getValue());
 		System.out.println("}");
 
@@ -222,12 +245,11 @@ class ObjectTemplate implements CRUD, Serializable {
 			return;
 
 		var listOfPaths = createListOfPath(path);
+		String targetKeyName = listOfPaths.getLast();
 
 		recursiveNavigation(listOfPaths);
 
-		if (objectDataPointer.remove(listOfPaths.getFirst()) == null)
-			System.out.println("Target not found!");
-
+		objectDataPointer.remove(targetKeyName);
 		objectDataPointer = floorMap; // reset pointer;
 	}
 
@@ -237,4 +259,4 @@ class ObjectTemplate implements CRUD, Serializable {
 				.split("\\W")));
 	}
 }
-// TODO: read: display and format specific branch
+// TODO: read: format and display specific branch
