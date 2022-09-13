@@ -3,12 +3,13 @@
  - On close, save to file
  - On start, read from file
 
+<pre>
 ~  create object "planet"
 ~  create field  "planet.name" "Earth"
 ~  create object  "planet.continents"
 ~  create object "planet.continents" "europe"
 ~  create field "planet.continents.europe.name" "Europe"
-
+</pre>
 <pre>
 planet = {
       name: "Earth",
