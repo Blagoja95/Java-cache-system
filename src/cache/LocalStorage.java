@@ -34,7 +34,6 @@ public class LocalStorage {
 	public ObjectTemplate loadData() {
 
 		try (ObjectInputStream inObjectFile = new ObjectInputStream(new FileInputStream(localFile))) {
-
 			return (ObjectTemplate) inObjectFile.readObject();
 
 		} catch (ClassNotFoundException | IOException ex) {

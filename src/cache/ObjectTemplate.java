@@ -54,7 +54,7 @@ class ObjectTemplate implements CRUD, Serializable {
 
 	private void recursiveRead(LinkedList<String> list, String last) {
 
-		if (list.size() == 0){
+		if (list.size() == 0) {
 			System.out.println("\"" + last + "\" : {");
 			return;
 		}
@@ -78,12 +78,12 @@ class ObjectTemplate implements CRUD, Serializable {
 	public void create(String[] commands) {
 
 		if (commands.length < VALUE) {
-			System.out.println("Missing arguments");
+			System.out.println("Missing arguments!");
 			return;
 		}
 
 		if (commands[PATH].length() == 0) {
-			System.out.println("Missing arguments!");
+			System.out.println("Missing arguments! Try command help!");
 			return;
 		}
 
@@ -98,7 +98,6 @@ class ObjectTemplate implements CRUD, Serializable {
 					return;
 				}
 
-				// Index 4 out of bounds for length 4 to do
 				if (commands.length != VALUE + 1 || commands[VALUE].length() == 0) {
 					System.out.println("Missing field value!");
 					return;
@@ -106,8 +105,6 @@ class ObjectTemplate implements CRUD, Serializable {
 
 				String value = commands[VALUE];
 				createField(listOfPaths, value);
-			}
-			default -> {
 			}
 		}
 	}
@@ -169,14 +166,14 @@ class ObjectTemplate implements CRUD, Serializable {
 
 		recursiveRead(path, "");
 
-		for (Map.Entry<String, ValueStructure> i : objectDataPointer.entrySet()){
+		for (Map.Entry<String, ValueStructure> i : objectDataPointer.entrySet()) {
 			System.out.print(i.getKey() + " : ");
 			ValueStructure temp = i.getValue();
 
-			if (temp.getStringValue() != null){
-			System.out.println(temp.getStringValue() + ",");
-			}else
-				System.out.print("{\n" + i.getValue());
+			if (temp.getStringValue() != null) {
+				System.out.println(temp.getStringValue() + ",");
+			} else
+				System.out.println("{\n" + i.getValue() + "},");
 		}
 
 		System.out.println("}");
@@ -200,7 +197,6 @@ class ObjectTemplate implements CRUD, Serializable {
 
 		var listOfPaths = createListOfPath(commands[PATH]);
 
-
 		if (commands[VALUE].length() == 0)
 			return;
 
@@ -216,7 +212,6 @@ class ObjectTemplate implements CRUD, Serializable {
 					updateValue(listOfPaths, new ValueStructure(value));
 			}
 			default -> System.out.println("Wrong target");
-
 		}
 	}
 
@@ -266,4 +261,3 @@ class ObjectTemplate implements CRUD, Serializable {
 				.split("\\W")));
 	}
 }
-// TODO: read: format and display specific branch
