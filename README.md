@@ -9,6 +9,7 @@
 ~  create object "planet.continents" "europe"
 ~  create field "planet.continents.europe.name" "Europe"
 
+<pre>
 planet = {
       name: "Earth",
       continents: {
@@ -23,7 +24,7 @@ planet = {
             }
       }
 }
-
+</pre>
 Other CRUD actions implement on your own but follow `cache create` pattern
 
 eg. `cache read "planet.earth"` returns JSON formatted output of branch
