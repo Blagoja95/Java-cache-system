@@ -20,6 +20,10 @@ public class ValueStructure implements Serializable {
         objectHierarchy = 1;
     }
 
+    public String getStringValue (){
+        return stringValue;
+    }
+
     @Override
     public String toString() {
         if (valueMap.size() == 0)

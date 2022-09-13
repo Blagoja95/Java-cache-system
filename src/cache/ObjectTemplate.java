@@ -172,9 +172,14 @@ class ObjectTemplate implements CRUD, Serializable {
 		for (Map.Entry<String, ValueStructure> i : objectDataPointer.entrySet()){
 			System.out.print(i.getKey() + " : ");
 			ValueStructure temp = i.getValue();
-		}
-		System.out.println("}");
 
+			if (temp.getStringValue() != null){
+			System.out.println(temp.getStringValue() + ",");
+			}else
+				System.out.print("{\n" + i.getValue());
+		}
+
+		System.out.println("}");
 		objectDataPointer = floorMap;
 	}
 
