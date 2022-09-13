@@ -11,13 +11,14 @@ public class Cache {
 	static final String HELP_MSG = """
 			Available commands:
 				
-			1. create object "object1.object2"
-			   create field  "object1.field" "value"
-			2. read ?
-			3. delete "object1.object2.deleteTarget"
-			4. update value "object1.updateTarget" "updateWith"
-			   update value "object1.updateTarget" "OBJECT" // to update it with a new object
-			   update key ? TODO""";
+			1. create object object1.object2
+			   create field  object1.field value
+			2. read all // display all branches of data
+			   rad ob1.ob2 // read from ob2 all data
+			3. delete object1.object2.deleteTarget
+			4. update value "object1.updateTarget" newValue
+			   update value object1.updateTarget OBJECT // to update it with a new object
+			   update key object1.object2.keyToUpdate newKeyValue""";
 
 	public static void main(String[] args) {
 		System.out.println("Welcome to the java cache system \n");
@@ -57,7 +58,7 @@ public class Cache {
 						}
 					}
 				else
-					System.out.printf("Wrong command. Try command help");
+					System.out.println("Wrong command. Try command help");
 			}
 		} catch (IOException ex) {
 			System.out.println(ex);
