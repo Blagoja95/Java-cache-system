@@ -169,8 +169,10 @@ class ObjectTemplate implements CRUD, Serializable {
 
 		recursiveRead(path, "");
 
-		for (Map.Entry<String, ValueStructure> i : objectDataPointer.entrySet())
-			System.out.print("\"" + i.getKey() + "\" : {\n" + i.getValue());
+		for (Map.Entry<String, ValueStructure> i : objectDataPointer.entrySet()){
+			System.out.print(i.getKey() + " : ");
+			ValueStructure temp = i.getValue();
+		}
 		System.out.println("}");
 
 		objectDataPointer = floorMap;
