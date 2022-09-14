@@ -110,6 +110,19 @@ class ObjectTemplate implements CRUD, Serializable {
 		}
 	}
 
+	private ValueStructure createValue(String value){
+		ValueStructure newVal;
+
+		try {
+			 newVal = new ValueStructure(Double.parseDouble(value));
+		}
+		catch (NumberFormatException ex){
+			newVal = new ValueStructure(value);
+		}
+
+		return newVal;
+	}
+
 	private void createObject(LinkedList<String> list) {
 		recursiveCreation(list, 0);
 		objectDataPointer = floorMap;
@@ -125,13 +138,7 @@ class ObjectTemplate implements CRUD, Serializable {
 			return;
 		}
 
-		try {
-			objectDataPointer
-					.put(key, new ValueStructure(Double.parseDouble(value)));
-		}
-		catch (NumberFormatException ex){
-		objectDataPointer.put(key, new ValueStructure(value));
-		}
+		objectDataPointer.put(key, createValue(value));
 		objectDataPointer = floorMap; // reset pointer
 	}
 
@@ -215,7 +222,7 @@ class ObjectTemplate implements CRUD, Serializable {
 				if (value.equals("OBJECT"))
 					updateValue(listOfPaths, new ValueStructure());
 				else
-					updateValue(listOfPaths, new ValueStructure(value));
+					updateValue(listOfPaths, createValue(value));
 			}
 			default -> System.out.println("Wrong target");
 		}
