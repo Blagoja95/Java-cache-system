@@ -191,6 +191,8 @@ class ObjectTemplate implements CRUD, Serializable {
 
 			if (temp.getStringValue() != null) {
 				System.out.println(temp.getStringValue() + ",");
+			}else if (temp.getNumberValue() != null) {
+				System.out.println(temp.getNumberValue() + ",");
 			} else
 				System.out.println("{\n" + i.getValue() + "},");
 		}
