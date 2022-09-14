@@ -51,12 +51,14 @@ public class ValueStructure implements Serializable {
             if (temp == null) {
                 string.append(" {},\n");
             } else if (temp.stringValue != null) {
-                string.append(" ")
+                string.append(" \"")
                         .append(temp.stringValue)
-                        .append(",\n");
+                        .append("\",\n");
             }else if (temp.numberValue != null){
                 string.append(" ")
-                        .append(temp.numberValue)
+                        .append((Double)temp.numberValue % 1 == 0
+                                ? temp.numberValue.intValue()
+                                : temp.numberValue)
                         .append(",\n");
             } else {
                 string.append("{\n")
