@@ -125,7 +125,13 @@ class ObjectTemplate implements CRUD, Serializable {
 			return;
 		}
 
+		try {
+			objectDataPointer
+					.put(key, new ValueStructure(Double.parseDouble(value)));
+		}
+		catch (NumberFormatException ex){
 		objectDataPointer.put(key, new ValueStructure(value));
+		}
 		objectDataPointer = floorMap; // reset pointer
 	}
 
