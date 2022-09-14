@@ -52,9 +52,9 @@ class ObjectTemplate implements CRUD, Serializable {
 		recursiveNavigation(list);
 	}
 
-	private void recursiveRead(LinkedList<String> list, String last) {
+	private void recursiveDisplay(LinkedList<String> list, String last) {
 
-		if (list.size() == 0) {
+		if (list.isEmpty()) {
 			System.out.println("\"" + last + "\" : {");
 			return;
 		}
@@ -72,7 +72,7 @@ class ObjectTemplate implements CRUD, Serializable {
 
 		objectDataPointer = tempOb.valueMap;
 		list.removeFirst();
-		recursiveRead(list, next);
+		recursiveDisplay(list, next);
 	}
 
 	public void create(String[] commands) {
@@ -106,12 +106,13 @@ class ObjectTemplate implements CRUD, Serializable {
 				String value = commands[VALUE];
 				createField(listOfPaths, value);
 			}
+			default -> System.out.println("Wrong command!");
 		}
 	}
 
 	private void createObject(LinkedList<String> list) {
 		recursiveCreation(list, 0);
-		objectDataPointer = floorMap; // reset pointer;
+		objectDataPointer = floorMap;
 	}
 
 	private void createField(LinkedList<String> listOfPaths, String value) {
@@ -163,8 +164,7 @@ class ObjectTemplate implements CRUD, Serializable {
 
 	private void display(LinkedList<String> path) {
 		ValueStructure.resetHierarchyLevel();
-
-		recursiveRead(path, "");
+		recursiveDisplay(path, "");
 
 		for (Map.Entry<String, ValueStructure> i : objectDataPointer.entrySet()) {
 			System.out.print(i.getKey() + " : ");
@@ -217,7 +217,6 @@ class ObjectTemplate implements CRUD, Serializable {
 
 	private void updateKey(LinkedList<String> listOfPaths, String keyToUpdate) {
 		recursiveNavigation(listOfPaths);
-
 		String key = listOfPaths.getFirst();
 
 		if (objectDataPointer.containsKey(key)) {
@@ -231,7 +230,6 @@ class ObjectTemplate implements CRUD, Serializable {
 
 	private void updateValue(LinkedList<String> listOfPaths, ValueStructure valueToUpdate) {
 		recursiveNavigation(listOfPaths);
-
 		String key = listOfPaths.getFirst();
 
 		if (objectDataPointer.containsKey(key))
@@ -250,9 +248,8 @@ class ObjectTemplate implements CRUD, Serializable {
 		String targetKeyName = listOfPaths.getLast();
 
 		recursiveNavigation(listOfPaths);
-
 		objectDataPointer.remove(targetKeyName);
-		objectDataPointer = floorMap; // reset pointer;
+		objectDataPointer = floorMap;
 	}
 
 	private LinkedList<String> createListOfPath(String path) {
