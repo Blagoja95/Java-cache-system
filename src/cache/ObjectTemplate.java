@@ -9,6 +9,7 @@ import java.util.Map;
 class ObjectTemplate implements CRUD, Serializable {
 	private final String WRONG_MSG = "Wrong arguments!";
 	private final String MISSING_MSG = "Missing arguments!";
+	private final String INVALID_MSG = "Invalid value!";
 	private final int TARGET = 1, PATH = 2, VALUE = 3; // indexes
 	LinkedHashMap<String, ValueStructure> floorMap = new LinkedHashMap<>();
 	LinkedHashMap<String, ValueStructure> objectDataPointer = floorMap;
@@ -110,20 +111,18 @@ class ObjectTemplate implements CRUD, Serializable {
 					return;
 				}
 
-				String value = commands[VALUE];
-				createField(listOfPaths, value);
+				createField(listOfPaths, commands[VALUE]);
 			}
 			default -> System.out.println("Wrong command!");
 		}
 	}
 
-	private ValueStructure createValue(String value){
+	private ValueStructure createValue(String value) {
 		ValueStructure newVal;
 
 		try {
-			 newVal = new ValueStructure(Double.parseDouble(value));
-		}
-		catch (NumberFormatException ex){
+			newVal = new ValueStructure(Double.parseDouble(value));
+		} catch (NumberFormatException ex) {
 			newVal = new ValueStructure(value);
 		}
 
@@ -225,16 +224,19 @@ class ObjectTemplate implements CRUD, Serializable {
 		if (commands[VALUE].isEmpty())
 			return;
 
-		String value = checkValue(commands[VALUE]);
-
-		if (value == null) {
-			System.out.println("Invalid value");
-			return;
-		}
-
 		switch (target) {
-			case "key" -> updateKey(listOfPaths, value);
+			case "key" -> {
+				String value = checkValue(commands[VALUE]);
+
+				if (value == null) {
+					System.out.println(INVALID_MSG);
+					return;
+				}
+
+				updateKey(listOfPaths, value);
+			}
 			case "value" -> {
+				String value = commands[VALUE];
 
 				if (value.equals("OBJECT"))
 					updateValue(listOfPaths, new ValueStructure());
@@ -298,7 +300,6 @@ class ObjectTemplate implements CRUD, Serializable {
 	}
 
 	public String checkValue(String input) {
-		System.out.println(input);
 
 		if (input.isEmpty())
 			return null;
