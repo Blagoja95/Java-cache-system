@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 class ObjectTemplate implements CRUD, Serializable {
+	private final String WRONG_MSG = "Wrong arguments!";
+	private final String MISSING_MSG = "Missing arguments!";
 	private final int TARGET = 1, PATH = 2, VALUE = 3; // indexes
 	LinkedHashMap<String, ValueStructure> floorMap = new LinkedHashMap<>();
 	LinkedHashMap<String, ValueStructure> objectDataPointer = floorMap;
@@ -78,16 +80,21 @@ class ObjectTemplate implements CRUD, Serializable {
 	public void create(String[] commands) {
 
 		if (commands.length < VALUE) {
-			System.out.println("Missing arguments!");
+			System.out.println(MISSING_MSG);
 			return;
 		}
 
 		if (commands[PATH].length() == 0) {
-			System.out.println("Missing arguments! Try command help!");
+			System.out.println(MISSING_MSG);
 			return;
 		}
 
 		var listOfPaths = createListOfPath(commands[PATH]);
+
+		if (listOfPaths.isEmpty()) {
+			System.out.println(WRONG_MSG);
+			return;
+		}
 
 		switch (commands[TARGET]) {
 			case "object" -> createObject(listOfPaths);
@@ -150,7 +157,7 @@ class ObjectTemplate implements CRUD, Serializable {
 			return;
 		}
 
-		if (commands[1].length() == 0) {
+		if (commands[1].isEmpty()) {
 			System.out.println("Path name can't be empty!. Try read all");
 			return;
 		}
@@ -163,7 +170,7 @@ class ObjectTemplate implements CRUD, Serializable {
 
 	private void display() {
 
-		if (floorMap.size() == 0) {
+		if (floorMap.isEmpty()) {
 			System.out.println("No data! Try create object objectName.");
 			return;
 		}
@@ -196,24 +203,34 @@ class ObjectTemplate implements CRUD, Serializable {
 	public void update(String[] commands) {
 
 		if (commands.length != 4) {
-			System.out.println("Missing arguments!");
+			System.out.println(MISSING_MSG);
 			return;
 		}
 
-		if (commands[TARGET].length() == 0)
+		if (commands[TARGET].isEmpty())
 			return;
 
 		String target = commands[TARGET];
 
-		if (commands[PATH].length() == 0)
+		if (commands[PATH].isEmpty())
 			return;
 
 		var listOfPaths = createListOfPath(commands[PATH]);
 
-		if (commands[VALUE].length() == 0)
+		if (listOfPaths.isEmpty()) {
+			System.out.println(WRONG_MSG);
+			return;
+		}
+
+		if (commands[VALUE].isEmpty())
 			return;
 
-		String value = commands[VALUE].replace("\"", "");
+		String value = checkValue(commands[VALUE]);
+
+		if (value == null) {
+			System.out.println("Invalid value");
+			return;
+		}
 
 		switch (target) {
 			case "key" -> updateKey(listOfPaths, value);
@@ -253,21 +270,42 @@ class ObjectTemplate implements CRUD, Serializable {
 	}
 
 	public void delete(String path) {
-
-		if (path.length() == 0)
+		if (path.isEmpty())
 			return;
 
 		var listOfPaths = createListOfPath(path);
-		String targetKeyName = listOfPaths.getLast();
 
+		if (listOfPaths.isEmpty()) {
+			System.out.println(WRONG_MSG);
+			return;
+		}
+
+		String targetKeyName = listOfPaths.getLast();
 		recursiveNavigation(listOfPaths);
 		objectDataPointer.remove(targetKeyName);
 		objectDataPointer = floorMap;
 	}
 
 	private LinkedList<String> createListOfPath(String path) {
-		return new LinkedList<>(List.of(path
+		LinkedList<String> newList = new LinkedList<>(List.of(path
 				.replace("\"", "")
 				.split("\\W")));
+
+		if (newList.isEmpty())
+			return new LinkedList<>();
+
+		return newList;
+	}
+
+	public String checkValue(String input) {
+		System.out.println(input);
+
+		if (input.isEmpty())
+			return null;
+
+		if (!input.matches("^[a-zA-Z0-9]*$"))
+			return null;
+
+		return input;
 	}
 }
