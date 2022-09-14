@@ -7,12 +7,16 @@ import java.util.Map;
 public class ValueStructure implements Serializable {
     private static int objectHierarchy = 1;
     private String stringValue;
+    private Number numberValue;
     public LinkedHashMap<String, ValueStructure> valueMap = new LinkedHashMap<>();
 
-    ValueStructure() {
+    ValueStructure () {}
+
+    ValueStructure (Number numberValue){
+        this.numberValue = numberValue;
     }
 
-    ValueStructure(String value) {
+    ValueStructure (String value) {
         this.stringValue = value;
     }
 
@@ -20,8 +24,12 @@ public class ValueStructure implements Serializable {
         objectHierarchy = 1;
     }
 
-    public String getStringValue (){
+    public String getStringValue(){
         return stringValue;
+    }
+
+    public Number getNumberValue(){
+        return numberValue;
     }
 
     @Override
@@ -44,8 +52,12 @@ public class ValueStructure implements Serializable {
                 string.append(" {},\n");
             } else if (temp.stringValue != null) {
                 string.append(" ")
-                        .append(temp.stringValue);
-                string.append(",\n");
+                        .append(temp.stringValue)
+                        .append(",\n");
+            }else if (temp.numberValue != null){
+                string.append(" ")
+                        .append(temp.numberValue)
+                        .append(",\n");
             } else {
                 string.append("{\n")
                         .append(temp);
