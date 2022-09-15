@@ -253,8 +253,13 @@ class ObjectTemplate implements CRUD, Serializable {
 			case "value" -> {
 				String value = commands[VALUE];
 
-				if (value.equals("OBJECT"))
+				if (value.equals("OBJECT")){
 					updateValue(listOfPaths, new ValueStructure());
+					return;
+				}
+
+				if (commands.length > MIN_ARG_SIZE_VALUE)
+					updateValue(listOfPaths, createValue(createSentence(commands)));
 				else
 					updateValue(listOfPaths, createValue(value));
 			}
