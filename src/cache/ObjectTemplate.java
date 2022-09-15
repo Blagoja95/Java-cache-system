@@ -7,10 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 class ObjectTemplate implements CRUD, Serializable {
-	private final String WRONG_MSG = "Wrong arguments!";
-	private final String MISSING_MSG = "Missing arguments!";
-	private final String INVALID_MSG = "Invalid value!";
-	private final int TARGET = 1, PATH = 2, VALUE = 3, MIN_ARG_SIZE_VALUE = 4; // indexes
+	private static final String WRONG_MSG = "Wrong arguments!";
+	private static final String MISSING_MSG = "Missing arguments!";
+	private static final String INVALID_MSG = "Invalid value!";
+	private static final int TARGET = 1;
+	private static final int PATH = 2;
+	private static final int VALUE = 3;
+	private static final int MIN_ARG_SIZE_VALUE = 4;
+
 	LinkedHashMap<String, ValueStructure> floorMap = new LinkedHashMap<>();
 	LinkedHashMap<String, ValueStructure> objectDataPointer = floorMap;
 
