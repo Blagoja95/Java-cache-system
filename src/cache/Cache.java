@@ -46,7 +46,7 @@ public class Cache {
 
 				String[] commands = input.split(" ");
 
-				if (commands.length >= MIN_ARGUMENTS && commands.length < MAX_ARGUMENTS)
+				if (commands.length >= MIN_ARGUMENTS)
 					switch (commands[0]) {
 						case "create" -> cache.create(commands);
 						case "read" -> cache.read(commands);
