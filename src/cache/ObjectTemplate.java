@@ -10,7 +10,7 @@ class ObjectTemplate implements CRUD, Serializable {
 	private final String WRONG_MSG = "Wrong arguments!";
 	private final String MISSING_MSG = "Missing arguments!";
 	private final String INVALID_MSG = "Invalid value!";
-	private final int TARGET = 1, PATH = 2, VALUE = 3; // indexes
+	private final int TARGET = 1, PATH = 2, VALUE = 3, MIN_ARG_SIZE_VALUE = 4; // indexes
 	LinkedHashMap<String, ValueStructure> floorMap = new LinkedHashMap<>();
 	LinkedHashMap<String, ValueStructure> objectDataPointer = floorMap;
 
@@ -106,12 +106,24 @@ class ObjectTemplate implements CRUD, Serializable {
 					return;
 				}
 
-				if (commands.length != VALUE + 1 || commands[VALUE].length() == 0) {
+				if (commands.length < MIN_ARG_SIZE_VALUE || commands[VALUE].length() == 0) {
 					System.out.println("Missing field value!");
 					return;
 				}
 
-				createField(listOfPaths, commands[VALUE]);
+				if (commands.length != MIN_ARG_SIZE_VALUE){
+					StringBuilder tempStrs = new StringBuilder();
+
+					for (int i = VALUE; i < commands.length; i++)
+						tempStrs.append(commands[i])
+								.append(" ");
+
+					createField(listOfPaths, tempStrs
+							.toString()
+							.trim());
+				}
+				else
+					createField(listOfPaths, commands[VALUE]);
 			}
 			default -> System.out.println("Wrong command!");
 		}
@@ -203,7 +215,7 @@ class ObjectTemplate implements CRUD, Serializable {
 
 	public void update(String[] commands) {
 
-		if (commands.length != 4) {
+		if (commands.length < MIN_ARG_SIZE_VALUE) {
 			System.out.println(MISSING_MSG);
 			return;
 		}
