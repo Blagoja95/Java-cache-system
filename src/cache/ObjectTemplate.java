@@ -111,14 +111,14 @@ class ObjectTemplate implements CRUD, Serializable {
 					return;
 				}
 
-				if (commands.length != MIN_ARG_SIZE_VALUE){
-					StringBuilder tempStrs = new StringBuilder();
+				if (commands.length > MIN_ARG_SIZE_VALUE){
+					StringBuilder sentence = new StringBuilder();
 
 					for (int i = VALUE; i < commands.length; i++)
-						tempStrs.append(commands[i])
+						sentence.append(commands[i])
 								.append(" ");
 
-					createField(listOfPaths, tempStrs
+					createField(listOfPaths, sentence
 							.toString()
 							.trim());
 				}
