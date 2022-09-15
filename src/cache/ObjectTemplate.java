@@ -111,22 +111,23 @@ class ObjectTemplate implements CRUD, Serializable {
 					return;
 				}
 
-				if (commands.length > MIN_ARG_SIZE_VALUE){
-					StringBuilder sentence = new StringBuilder();
-
-					for (int i = VALUE; i < commands.length; i++)
-						sentence.append(commands[i])
-								.append(" ");
-
-					createField(listOfPaths, sentence
-							.toString()
-							.trim());
-				}
+				if (commands.length > MIN_ARG_SIZE_VALUE)
+					createField(listOfPaths, createSentence(commands));
 				else
 					createField(listOfPaths, commands[VALUE]);
 			}
 			default -> System.out.println("Wrong command!");
 		}
+	}
+
+	private String createSentence (String[] arguments){
+		StringBuilder sentence = new StringBuilder();
+
+		for (int i = VALUE; i < arguments.length; i++)
+			sentence.append(arguments[i])
+					.append(" ");
+
+		return sentence.toString().trim();
 	}
 
 	private ValueStructure createValue(String value) {
