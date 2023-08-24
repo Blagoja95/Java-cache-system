@@ -1,4 +1,4 @@
-package cache;
+package com.cache;
 
 public interface CRUD {
      void create(String[] commands);

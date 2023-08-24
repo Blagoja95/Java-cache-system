@@ -1,4 +1,4 @@
-package cache;
+package com.cache;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
