@@ -44,19 +44,21 @@ Available commands:
 1. create object object1.object2
    create field object1.field value
 
-2. read all // display all branches of data
-   rad ob1.ob2 // read from ob2 all data
+2. Reading:
+    1.  read all // display all branches of data
+    2.   read ob1.ob2 // read from ob2 all data <br/><br/>
 
 3. delete object1.object2.deleteTarget
 
-4. update value "object1.updateTarget" newValue
-   update value object1.updateTarget OBJECT // to update it with a new object
-   update key object1.object2.keyToUpdate newKeyValue
+4. Updating:
+    1. update value "object1.updateTarget" newValue
+   2. update value object1.updateTarget OBJECT // to update it with a new object
+   3. update key object1.object2.keyToUpdate newKeyValue
 
 **All entries are serialized and then saved localy in *json.ser* file.**
 
 ## How to try it out yourself
 
-1. Clone this repository
+1. Clone this repository or download release source
 2. By using Java supported IDE (Eclipse, InteliJ, ...) or by using some CLI build and run this project
-3. If successful Java cash system grating and menu will appear in your terminal
+3. If successful Java cash system welcome message and menu will appear in your terminal.
